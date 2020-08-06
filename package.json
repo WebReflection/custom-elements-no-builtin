@@ -42,5 +42,13 @@
   "dependencies": {
     "@webreflection/lie": "^0.1.1",
     "qsa-observer": "^1.1.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WebReflection/custom-elements-no-builtin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WebReflection/custom-elements-no-builtin/issues"
+  },
+  "homepage": "https://github.com/WebReflection/custom-elements-no-builtin#readme"
 }
