@@ -15,7 +15,7 @@ Please use features detection to avoid including this polyfill in every browser,
 ```html
 <script>
 if(!self.customElements)
-  document.write('<script src="//unpkg.com/@webreflection/custom-elements-builtin"><\x2fscript>')
+  document.write('<script src="//unpkg.com/@webreflection/custom-elements-no-builtin"><\x2fscript>')
 </script>
 ```
 
