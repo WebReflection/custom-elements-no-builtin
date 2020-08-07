@@ -6,7 +6,7 @@ const qsaObserver = (m => m.__esModule ? /* istanbul ignore next */ m.default : 
 if (!self.customElements) {
 
   const {
-    document, HTMLElement,
+    document, HTMLElement, Node,
     Map, MutationObserver, Object,
     Error, TypeError
   } = self;

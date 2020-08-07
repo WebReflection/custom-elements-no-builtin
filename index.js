@@ -174,6 +174,7 @@
     var _self$1 = self,
         document$1 = _self$1.document,
         HTMLElement = _self$1.HTMLElement,
+        Node = _self$1.Node,
         _Map = _self$1.Map,
         MutationObserver$1 = _self$1.MutationObserver,
         _Object = _self$1.Object,
