@@ -58,6 +58,12 @@
     };
   });
 
+  var _self = self,
+      document = _self.document,
+      MutationObserver = _self.MutationObserver,
+      Set = _self.Set,
+      WeakMap = _self.WeakMap;
+
   var elements = function elements(element) {
     return 'querySelectorAll' in element;
   };
@@ -165,14 +171,14 @@
       return augment(setPrototypeOf(element, constructor.prototype), is);
     };
 
-    var _self = self,
-        document$1 = _self.document,
-        HTMLElement = _self.HTMLElement,
-        _Map = _self.Map,
-        MutationObserver$1 = _self.MutationObserver,
-        _Object = _self.Object,
-        _Error = _self.Error,
-        _TypeError = _self.TypeError;
+    var _self$1 = self,
+        document$1 = _self$1.document,
+        HTMLElement = _self$1.HTMLElement,
+        _Map = _self$1.Map,
+        MutationObserver$1 = _self$1.MutationObserver,
+        _Object = _self$1.Object,
+        _Error = _self$1.Error,
+        _TypeError = _self$1.TypeError;
     var createElement = document$1.createElement;
     var defineProperty = _Object.defineProperty,
         setPrototypeOf = _Object.setPrototypeOf;
