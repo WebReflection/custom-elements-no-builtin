@@ -1,9 +1,12 @@
 'use strict';
 const Lie = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('@webreflection/lie'));
+const attributesObserver = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('@webreflection/custom-elements-attributes'));
 const qsaObserver = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('qsa-observer'));
 
 if (!self.customElements) {
 
+  const {document, HTMLElement, MutationObserver, Object} = self;
+  const {createElement} = document;
   const {defineProperty, setPrototypeOf} = Object;
 
   const classes = new Map;
@@ -12,36 +15,6 @@ if (!self.customElements) {
   const registry = new Map;
 
   const query = [];
-
-  const attributeChanged = records => {
-    for (let i = 0, {length} = records; i < length; i++) {
-      const {target, attributeName, oldValue} = records[i];
-      const newValue = target.getAttribute(attributeName);
-      target.attributeChangedCallback(attributeName, oldValue, newValue);
-    }
-  };
-
-  const augment = (element, is) => {
-    const {observedAttributes: attributeFilter} = element.constructor;
-    if (attributeFilter) {
-      whenDefined(is).then(() => {
-        new MutationObserver(attributeChanged).observe(element, {
-          attributes: true,
-          attributeOldValue: true,
-          attributeFilter
-        });
-        attributeFilter.forEach(attributeName => {
-          if (element.hasAttribute(attributeName))
-            element.attributeChangedCallback(
-              attributeName,
-              null,
-              element.getAttribute(attributeName)
-            );
-        });
-      });
-    }
-    return element;
-  };
 
   const handle = (element, connected, selector) => {
     const proto = prototypes.get(selector);
@@ -67,9 +40,10 @@ if (!self.customElements) {
     return defined.get(name).$;
   };
 
+  const augment = attributesObserver(whenDefined, MutationObserver);
+
   defineProperty(self, 'customElements', {
     configurable: true,
-    writable: true,
     value: {
       define: (is, Class) => {
         if (registry.has(is))
@@ -89,12 +63,25 @@ if (!self.customElements) {
   });
 
   (HTMLBuiltIn.prototype = HTMLElement.prototype).constructor = HTMLBuiltIn;
-  defineProperty(self, 'HTMLElement', {value: HTMLBuiltIn});
+
+  defineProperty(self, 'HTMLElement', {
+    configurable: true,
+    value: HTMLBuiltIn
+  });
+
+  defineProperty(document, 'createElement', {
+    configurable: true,
+    value(name, options) {
+      const is = options && options.is;
+      return is ? new (registry.get(is)) : createElement.call(document, name);
+    }
+  });
 
   // in case ShadowDOM is used through a polyfill, to avoid issues
   // with builtin extends within shadow roots
   if (!('isConnected' in Node.prototype))
     defineProperty(Node.prototype, 'isConnected', {
+      configurable: true,
       get() {
         return !(
           this.ownerDocument.compareDocumentPosition(this) &

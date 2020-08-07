@@ -4,16 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>custom-elements-no-builtin</title>
-  <script type="module">
-  import(
-    /^(?:localhost|[::1]|127(?:.d+){3})$/.test(location.hostname) ?
-    '../esm/index.js' :
-    'https://unpkg.com/custom-elements-no-builtin?module'
-  )
-  .then((module) => {
-    console.log(module);
-  });
+  <style>
+  custom-element {
+    display: block;
+    font-weight: bold;
+  }
+  </style>
+  <script src="../index.js"></script>
+  <script src="./index.js"></script>
+  <script>
+  this.onload = function () {
+    setTimeout(function () {
+      document.body.appendChild(
+        document.createElement('custom-element')
+      ).setAttribute('test', 'runtime attribute');
+      setTimeout(function () {
+        document.body.textContent = '';
+      }, 1000);
+    }, 1000);
+  };
   </script>
 </head>
-<body></body>
+<body>
+  <custom-element test="some attribute"></custom-element>
+</body>
 </html>

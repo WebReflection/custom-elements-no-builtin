@@ -19,6 +19,45 @@
     }
   };
 
+  var attributesObserver = (function (whenDefined, MutationObserver) {
+    var attributeChanged = function attributeChanged(records) {
+      for (var i = 0, length = records.length; i < length; i++) {
+        dispatch(records[i]);
+      }
+    };
+
+    var dispatch = function dispatch(_ref) {
+      var target = _ref.target,
+          attributeName = _ref.attributeName,
+          oldValue = _ref.oldValue;
+      target.attributeChangedCallback(attributeName, oldValue, target.getAttribute(attributeName));
+    };
+
+    return function (target, is) {
+      var attributeFilter = target.constructor.observedAttributes;
+
+      if (attributeFilter) {
+        whenDefined(is).then(function () {
+          new MutationObserver(attributeChanged).observe(target, {
+            attributes: true,
+            attributeOldValue: true,
+            attributeFilter: attributeFilter
+          });
+
+          for (var i = 0, length = attributeFilter.length; i < length; i++) {
+            if (target.hasAttribute(attributeFilter[i])) dispatch({
+              target: target,
+              attributeName: attributeFilter[i],
+              oldValue: null
+            });
+          }
+        });
+      }
+
+      return target;
+    };
+  });
+
   var elements = function elements(element) {
     return 'querySelectorAll' in element;
   };
@@ -122,47 +161,23 @@
       if (!classes.has(constructor)) throw new TypeError('Illegal constructor');
       var is = classes.get(constructor);
       if (override) return augment(override, is);
-      var element = createElement.call(document, is);
+      var element = createElement.call(document$1, is);
       return augment(setPrototypeOf(element, constructor.prototype), is);
     };
 
-    var defineProperty = Object.defineProperty,
-        setPrototypeOf = Object.setPrototypeOf;
+    var _self = self,
+        document$1 = _self.document,
+        HTMLElement = _self.HTMLElement,
+        MutationObserver$1 = _self.MutationObserver,
+        _Object = _self.Object;
+    var createElement = document$1.createElement;
+    var defineProperty = _Object.defineProperty,
+        setPrototypeOf = _Object.setPrototypeOf;
     var classes = new Map();
     var defined = new Map();
     var prototypes = new Map();
     var registry = new Map();
     var query = [];
-
-    var attributeChanged = function attributeChanged(records) {
-      for (var i = 0, length = records.length; i < length; i++) {
-        var _records$i = records[i],
-            target = _records$i.target,
-            attributeName = _records$i.attributeName,
-            oldValue = _records$i.oldValue;
-        var newValue = target.getAttribute(attributeName);
-        target.attributeChangedCallback(attributeName, oldValue, newValue);
-      }
-    };
-
-    var augment = function augment(element, is) {
-      var attributeFilter = element.constructor.observedAttributes;
-
-      if (attributeFilter) {
-        whenDefined(is).then(function () {
-          new MutationObserver(attributeChanged).observe(element, {
-            attributes: true,
-            attributeOldValue: true,
-            attributeFilter: attributeFilter
-          });
-          attributeFilter.forEach(function (attributeName) {
-            if (element.hasAttribute(attributeName)) element.attributeChangedCallback(attributeName, null, element.getAttribute(attributeName));
-          });
-        });
-      }
-
-      return element;
-    };
 
     var handle = function handle(element, connected, selector) {
       var proto = prototypes.get(selector);
@@ -205,9 +220,9 @@
       return defined.get(name).$;
     };
 
+    var augment = attributesObserver(whenDefined, MutationObserver$1);
     defineProperty(self, 'customElements', {
       configurable: true,
-      writable: true,
       value: {
         define: function define(is, Class) {
           if (registry.has(is)) throw new Error("the name \"".concat(is, "\" has already been used with this registry"));
@@ -216,7 +231,7 @@
           registry.set(is, Class);
           query.push(is);
           whenDefined(is).then(function () {
-            parse(document.querySelectorAll(is));
+            parse(document$1.querySelectorAll(is));
           });
 
           defined.get(is)._();
@@ -229,11 +244,20 @@
     });
     (HTMLBuiltIn.prototype = HTMLElement.prototype).constructor = HTMLBuiltIn;
     defineProperty(self, 'HTMLElement', {
+      configurable: true,
       value: HTMLBuiltIn
+    });
+    defineProperty(document$1, 'createElement', {
+      configurable: true,
+      value: function value(name, options) {
+        var is = options && options.is;
+        return is ? new (registry.get(is))() : createElement.call(document$1, name);
+      }
     }); // in case ShadowDOM is used through a polyfill, to avoid issues
     // with builtin extends within shadow roots
 
     if (!('isConnected' in Node.prototype)) defineProperty(Node.prototype, 'isConnected', {
+      configurable: true,
       get: function get() {
         return !(this.ownerDocument.compareDocumentPosition(this) & this.DOCUMENT_POSITION_DISCONNECTED);
       }
