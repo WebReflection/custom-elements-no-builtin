@@ -5,7 +5,12 @@ const qsaObserver = (m => m.__esModule ? /* istanbul ignore next */ m.default : 
 
 if (!self.customElements) {
 
-  const {document, HTMLElement, MutationObserver, Object} = self;
+  const {
+    document, HTMLElement,
+    Map, MutationObserver, Object,
+    Error, TypeError
+  } = self;
+  
   const {createElement} = document;
   const {defineProperty, setPrototypeOf} = Object;
 

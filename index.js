@@ -158,7 +158,7 @@
   if (!self.customElements) {
     var HTMLBuiltIn = function HTMLBuiltIn() {
       var constructor = this.constructor;
-      if (!classes.has(constructor)) throw new TypeError('Illegal constructor');
+      if (!classes.has(constructor)) throw new _TypeError('Illegal constructor');
       var is = classes.get(constructor);
       if (override) return augment(override, is);
       var element = createElement.call(document$1, is);
@@ -168,15 +168,18 @@
     var _self = self,
         document$1 = _self.document,
         HTMLElement = _self.HTMLElement,
+        _Map = _self.Map,
         MutationObserver$1 = _self.MutationObserver,
-        _Object = _self.Object;
+        _Object = _self.Object,
+        _Error = _self.Error,
+        _TypeError = _self.TypeError;
     var createElement = document$1.createElement;
     var defineProperty = _Object.defineProperty,
         setPrototypeOf = _Object.setPrototypeOf;
-    var classes = new Map();
-    var defined = new Map();
-    var prototypes = new Map();
-    var registry = new Map();
+    var classes = new _Map();
+    var defined = new _Map();
+    var prototypes = new _Map();
+    var registry = new _Map();
     var query = [];
 
     var handle = function handle(element, connected, selector) {
@@ -225,7 +228,7 @@
       configurable: true,
       value: {
         define: function define(is, Class) {
-          if (registry.has(is)) throw new Error("the name \"".concat(is, "\" has already been used with this registry"));
+          if (registry.has(is)) throw new _Error("the name \"".concat(is, "\" has already been used with this registry"));
           classes.set(Class, is);
           prototypes.set(is, Class.prototype);
           registry.set(is, Class);
