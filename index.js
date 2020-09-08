@@ -244,10 +244,10 @@
             parse(document$1.querySelectorAll(is));
           });
 
-          defined.get(is)._();
+          defined.get(is)._(Class);
         },
-        get: function get(selector) {
-          return registry.get(selector);
+        get: function get(is) {
+          return registry.get(is);
         },
         whenDefined: whenDefined
       }

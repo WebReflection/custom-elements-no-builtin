@@ -59,9 +59,9 @@ if (!self.customElements) {
         whenDefined(is).then(() => {
           parse(document.querySelectorAll(is));
         });
-        defined.get(is)._();
+        defined.get(is)._(Class);
       },
-      get: selector => registry.get(selector),
+      get: is => registry.get(is),
       whenDefined
     }
   });
