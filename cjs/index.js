@@ -78,7 +78,8 @@ if (!self.customElements) {
     configurable: true,
     value(name, options) {
       const is = options && options.is;
-      return is ? new (registry.get(is)) : createElement.call(document, name);
+      const Class = is ? registry.get(is) : registry.get(name);
+      return Class ? new Class :  createElement.call(document, name);
     }
   });
 
