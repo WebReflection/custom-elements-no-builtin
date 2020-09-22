@@ -234,6 +234,9 @@
     defineProperty(self, 'customElements', {
       configurable: true,
       value: {
+        _: {
+          classes: classes
+        },
         define: function define(is, Class) {
           if (registry.has(is)) throw new _Error("the name \"".concat(is, "\" has already been used with this registry"));
           classes.set(Class, is);
