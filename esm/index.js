@@ -49,7 +49,6 @@ if (!self.customElements) {
   defineProperty(self, 'customElements', {
     configurable: true,
     value: {
-      _: {classes},
       define: (is, Class) => {
         if (registry.has(is))
           throw new Error(`the name "${is}" has already been used with this registry`);
