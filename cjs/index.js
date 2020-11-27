@@ -67,7 +67,11 @@ if (!self.customElements) {
     }
   });
 
-  (HTMLBuiltIn.prototype = HTMLElement.prototype).constructor = HTMLBuiltIn;
+  defineProperty(
+    HTMLBuiltIn.prototype = HTMLElement.prototype,
+    'constructor',
+    {value: HTMLBuiltIn}
+  );
 
   defineProperty(self, 'HTMLElement', {
     configurable: true,
