@@ -1,7 +1,8 @@
 'use strict';
-const Lie = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('@webreflection/lie'));
-const attributesObserver = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('@webreflection/custom-elements-attributes'));
-const qsaObserver = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('qsa-observer'));
+const Lie = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('@webreflection/lie'));
+const attributesObserver = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('@webreflection/custom-elements-attributes'));
+const {expando} = require('@webreflection/custom-elements-upgrade');
+const qsaObserver = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('qsa-observer'));
 
 if (!self.customElements) {
 
@@ -24,9 +25,13 @@ if (!self.customElements) {
   const handle = (element, connected, selector) => {
     const proto = prototypes.get(selector);
     if (connected && !proto.isPrototypeOf(element)) {
+      const redefine = expando(element);
       override = setPrototypeOf(element, proto);
       try { new proto.constructor; }
-      finally { override = null; }
+      finally {
+        override = null;
+        redefine();
+      }
     }
     const method = `${connected ? '' : 'dis'}connectedCallback`;
     if (method in proto)

@@ -1,5 +1,6 @@
 import Lie from '@webreflection/lie';
 import attributesObserver from '@webreflection/custom-elements-attributes';
+import {expando} from '@webreflection/custom-elements-upgrade';
 import qsaObserver from 'qsa-observer';
 
 if (!self.customElements) {
@@ -23,9 +24,13 @@ if (!self.customElements) {
   const handle = (element, connected, selector) => {
     const proto = prototypes.get(selector);
     if (connected && !proto.isPrototypeOf(element)) {
+      const redefine = expando(element);
       override = setPrototypeOf(element, proto);
       try { new proto.constructor; }
-      finally { override = null; }
+      finally {
+        override = null;
+        redefine();
+      }
     }
     const method = `${connected ? '' : 'dis'}connectedCallback`;
     if (method in proto)

@@ -58,6 +58,24 @@
     };
   });
 
+  var keys = Object.keys;
+  var expando = function expando(element) {
+    var key = keys(element);
+    var value = [];
+    var length = key.length;
+
+    for (var i = 0; i < length; i++) {
+      value[i] = element[key[i]];
+      delete element[key[i]];
+    }
+
+    return function () {
+      for (var _i = 0; _i < length; _i++) {
+        element[key[_i]] = value[_i];
+      }
+    };
+  };
+
   var _self = self,
       document = _self.document,
       MutationObserver = _self.MutationObserver,
@@ -197,12 +215,14 @@
       var proto = prototypes.get(selector);
 
       if (connected && !proto.isPrototypeOf(element)) {
+        var redefine = expando(element);
         override = setPrototypeOf(element, proto);
 
         try {
           new proto.constructor();
         } finally {
           override = null;
+          redefine();
         }
       }
 

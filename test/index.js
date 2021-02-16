@@ -162,13 +162,6 @@
 
     var _super = _createSuper(_class);
 
-    _createClass(_class, null, [{
-      key: "observedAttributes",
-      get: function get() {
-        return ['test'];
-      }
-    }]);
-
     function _class() {
       var _this;
 
@@ -194,6 +187,11 @@
       key: "disconnectedCallback",
       value: function disconnectedCallback() {
         document.body.appendChild(document.createElement('div')).textContent = 'OK';
+      }
+    }], [{
+      key: "observedAttributes",
+      get: function get() {
+        return ['test'];
       }
     }]);
 
