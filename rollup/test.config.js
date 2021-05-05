@@ -10,8 +10,8 @@ export default {
       babelHelpers: 'bundled'
     })
   ],
-  
   output: {
+    esModule: false,
     exports: 'named',
     file: './test/index.js',
     format: 'iife'
