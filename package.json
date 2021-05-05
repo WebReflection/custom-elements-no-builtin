@@ -1,6 +1,6 @@
 {
   "name": "@webreflection/custom-elements-no-builtin",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "A customElements polyfill without builtin extends",
   "main": "./cjs/index.js",
   "scripts": {
