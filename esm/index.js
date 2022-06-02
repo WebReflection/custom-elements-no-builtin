@@ -1,4 +1,3 @@
-import Lie from '@webreflection/lie';
 import attributesObserver from '@webreflection/custom-elements-attributes';
 import {expando} from '@webreflection/custom-elements-upgrade';
 import qsaObserver from 'qsa-observer';
@@ -10,7 +9,7 @@ if (!self.customElements) {
     Map, MutationObserver, Object,
     Error, TypeError
   } = self;
-  
+
   const {createElement} = document;
   const {defineProperty, setPrototypeOf} = Object;
 
@@ -43,7 +42,7 @@ if (!self.customElements) {
 
   const whenDefined = name => {
     if (!defined.has(name)) {
-      let _, $ = new Lie($ => { _ = $; });
+      let _, $ = new Promise($ => { _ = $; });
       defined.set(name, {$, _});
     }
     return defined.get(name).$;

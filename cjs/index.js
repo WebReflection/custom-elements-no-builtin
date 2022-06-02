@@ -1,5 +1,4 @@
 'use strict';
-const Lie = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('@webreflection/lie'));
 const attributesObserver = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('@webreflection/custom-elements-attributes'));
 const {expando} = require('@webreflection/custom-elements-upgrade');
 const qsaObserver = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('qsa-observer'));
@@ -11,7 +10,7 @@ if (!self.customElements) {
     Map, MutationObserver, Object,
     Error, TypeError
   } = self;
-  
+
   const {createElement} = document;
   const {defineProperty, setPrototypeOf} = Object;
 
@@ -44,7 +43,7 @@ if (!self.customElements) {
 
   const whenDefined = name => {
     if (!defined.has(name)) {
-      let _, $ = new Lie($ => { _ = $; });
+      let _, $ = new Promise($ => { _ = $; });
       defined.set(name, {$, _});
     }
     return defined.get(name).$;
