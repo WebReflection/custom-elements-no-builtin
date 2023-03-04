@@ -51,25 +51,22 @@ if (!self.customElements) {
 
   const augment = attributesObserver(whenDefined, MutationObserver);
 
-  defineProperty(self, 'customElements', {
-    configurable: true,
-    value: {
-      define: (is, Class) => {
-        if (registry.has(is))
-          throw new Error(`the name "${is}" has already been used with this registry`);
-        classes.set(Class, is);
-        prototypes.set(is, Class.prototype);
-        registry.set(is, Class);
-        query.push(is);
-        whenDefined(is).then(() => {
-          parse(document.querySelectorAll(is));
-        });
-        defined.get(is)._(Class);
-      },
-      get: is => registry.get(is),
-      whenDefined
-    }
-  });
+  self.customElements = {
+    define: (is, Class) => {
+      if (registry.has(is))
+        throw new Error(`the name "${is}" has already been used with this registry`);
+      classes.set(Class, is);
+      prototypes.set(is, Class.prototype);
+      registry.set(is, Class);
+      query.push(is);
+      whenDefined(is).then(() => {
+        parse(document.querySelectorAll(is));
+      });
+      defined.get(is)._(Class);
+    },
+    get: is => registry.get(is),
+    whenDefined
+  };
 
   defineProperty(
     HTMLBuiltIn.prototype = HTMLElement.prototype,
@@ -77,19 +74,12 @@ if (!self.customElements) {
     {value: HTMLBuiltIn}
   );
 
-  defineProperty(self, 'HTMLElement', {
-    configurable: true,
-    value: HTMLBuiltIn
-  });
-
-  defineProperty(document, 'createElement', {
-    configurable: true,
-    value(name, options) {
-      const is = options && options.is;
-      const Class = is ? registry.get(is) : registry.get(name);
-      return Class ? new Class :  createElement.call(document, name);
-    }
-  });
+  self.HTMLElement = HTMLBuiltIn;
+  document.createElement = function (name, options) {
+    const is = options && options.is;
+    const Class = is ? registry.get(is) : registry.get(name);
+    return Class ? new Class :  createElement.call(document, name);
+  };
 
   // in case ShadowDOM is used through a polyfill, to avoid issues
   // with builtin extends within shadow roots
